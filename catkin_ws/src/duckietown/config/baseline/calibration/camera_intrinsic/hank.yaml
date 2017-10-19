@@ -1,0 +1,23 @@
+camera_matrix:
+  cols: 3
+  data: [331.6483230927746, 0.0, 305.3418245750036, 0.0, 328.86109313295145, 261.95740771473686,
+    0.0, 0.0, 1.0]
+  rows: 3
+camera_name: hank/camera_node
+distortion_coefficients:
+  cols: 5
+  data: [-0.2971079802231605, 0.07100322668930918, -0.0011368522913763651, -0.0006110840063075916,
+    0.0]
+  rows: 1
+distortion_model: plumb_bob
+image_height: 480
+image_width: 640
+projection_matrix:
+  cols: 4
+  data: [238.97842407226562, 0.0, 303.5529046130614, 0.0, 0.0, 261.6829833984375,
+    272.2271885318187, 0.0, 0.0, 0.0, 1.0, 0.0]
+  rows: 3
+rectification_matrix:
+  cols: 3
+  data: [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0]
+  rows: 3
