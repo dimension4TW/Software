@@ -33,7 +33,7 @@ class AprilPostPros(object):
 
             #send the msg of the poing
             pos = Point()
-            #pos = ???
+            pos = detection.pose.pose.position
             self.pub_info.publish(pos)
         
 if __name__ == '__main__': 
