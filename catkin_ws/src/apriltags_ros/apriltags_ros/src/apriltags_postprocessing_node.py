@@ -6,7 +6,7 @@ from duckietown_msgs.msg import AprilTagsWithInfos, TagInfo, AprilTagDetectionAr
 import numpy as np
 import tf.transformations as tr
 from geometry_msgs.msg import PoseStamped
-
+import math 
 class AprilPostPros(object):
     """ """
     def __init__(self):    
@@ -72,11 +72,31 @@ class AprilPostPros(object):
     def callback(self, msg):
 
         tag_infos = []
-
+        daxy = AprilTagDetectionArray()
         # Load tag detections message
         for detection in msg.detections:
-
             # ------ start tag info processing
+            # Construct the coordinate by three tags
+			if detection.id == 32:
+				daxy.detections.insert(0,detection)
+            elif detection.id == 1:
+                daxy.detections.insert(1,detection)
+            elif detection.id == 2:
+                daxy.detections.insert(2,detection)
+            elif detection.id == 3:
+                daxy.detections.insert(3,detection)
+        print daxy
+        dist1 = math.hypot(daxy.detections[2].pose.pose.position.x - daxy.detections[1].pose.pose.position.x,daxy.detections[2].pose.pose.position.y - daxy.detections[1].pose.pose.position.y)
+        dist2 = math.hypot(daxy.detections[0].pose.pose.position.x - daxy.detections[1].pose.pose.position.x,daxy.detections[0].pose.pose.position.y - daxy.detections[1].pose.pose.position.y)
+        cgy = (daxy.detections[3].pose.pose.position.x-daxy.detections[1].pose.pose.position.x)*(daxy.detections[2].pose.pose.position.x - daxy.detections[1].pose.pose.position.x)/dist1 + (daxy.detections[3].pose.pose.position.y-daxy.detections[1].pose.pose.position.y)*(daxy.detections[2].pose.pose.position.y - daxy.detections[1].pose.pose.position.y)/dist1
+        cgx = (daxy.detections[3].pose.pose.position.x-daxy.detections[1].pose.pose.position.x)*(daxy.detections[0].pose.pose.position.x - daxy.detections[1].pose.pose.position.x)/dist2 + (daxy.detections[3].pose.pose.position.y-daxy.detections[1].pose.pose.position.y)*(daxy.detections[0].pose.pose.position.y - daxy.detections[1].pose.pose.position.y)/dist2
+        print "tag1.x=0.00,tag1.y=0.00\ntag2.x=0.00,tag2.y=%f\ntag32.x=%f,tag32.y=0.00" % (dist1,dist2)
+        print "tag3.x=%f,tag3.y=%f" % (cgx,cgy)
+
+		# Load tag detections message
+        for detection in msg.detections:
+		    # ------ start tag info processing
+        
 
             new_info = TagInfo()
             new_info.id = int(detection.id)
@@ -119,6 +139,7 @@ class AprilPostPros(object):
             #Load translation
             trans = detection.pose.pose.position
             rot = detection.pose.pose.orientation
+        
 
             camzout_t_tagzout = tr.translation_matrix((trans.x*self.scale_x, trans.y*self.scale_y, trans.z*self.scale_z))
             camzout_R_tagzout = tr.quaternion_matrix((rot.x, rot.y, rot.z, rot.w))
